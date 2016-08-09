@@ -44,71 +44,71 @@
   <div class="container">
     <div class="row text-center" id="gameboard">
 
-      <div class="row">
-        <div class="col-xs-8">
-
-          <div class="row">
-            <!-- Player Profile column -->
-            <div class="col-xs-12">
-
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">Player Profile</h3>
-                </div>
-                <div class="panel-body">
-                  Display player profile here...
-                </div>
-              </div>
-
-            </div> <!-- /.col-xs-12 -->
-          </div> <!-- /.row -->
-
-          <div class="row">
-            <!-- RPSLS Leaderboard column -->
-            <div class="col-xs-12">
-
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h3 class="panel-title">RPSLS Leaderboards</h3>
-                </div>
-                <div class="panel-body">
-                  <div class="col-xs-3 leaderboards">
-                    <img src="assets/img/most_wins.png" alt="Most wins">
-                    <h4>MOST WINS</h4>
-                    <span id="leaderboard-wins">C-3PO</span>
-                  </div>
-                  <div class="col-xs-3 col-xs-offset-1 leaderboards">
-                    <img src="assets/img/most_losses.png" alt="Most losses">
-                    <h4>MOST LOSSES</h4>
-                    <span id="leaderboard-losses">R2-D2</span>
-                  </div>
-                  <div class="col-xs-4 col-xs-offset-1 leaderboards">
-                    <img src="assets/img/koh.png" alt="King of the Spock">
-                    <h4>KING OF THE SPOCK</h4>
-                    <span id="leaderboard-koh">Skywalker</span>
-                  </div>
-                </div>
-              </div>
-
-            </div> <!-- /.col-xs-12 -->
-          </div> <!-- /.row -->
-
-        </div>
-
-        <div class="col-xs-4">
-
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Open Games</h3>
+      <div class="row battlefield">
+        <div class="col-sm-4 player-col">
+          <h2 id="name-player">PLAYER NAME</h2>
+          <div class="weapon-choices">
+            <!-- RPSLS CHOICES GO HERE -->
+            <div class="weapon" id="rock">
+              <img src="assets/img/rock.png" class="weapon-img">
+              <p class="weapon-name">ROCK</p>
             </div>
-            <div class="panel-body">
-              List open games here...
+            <div class="weapon" id="paper">
+              <img src="assets/img/paper.png" class="weapon-img">
+              <p class="weapon-name">PAPER</p>
             </div>
-            <div class="panel-footer"><button type="button" class="btn btn-success">Start new game</button></div>
+            <div class="weapon" id="scissors">
+              <img src="assets/img/scissors.png" class="weapon-img">
+              <p class="weapon-name">SCISSORS</p>
+            </div>
+            <div class="weapon" id="lizard">
+              <img src="assets/img/lizard.png" class="weapon-img">
+              <p class="weapon-name">LIZARD</p>
+            </div>
+            <div class="weapon" id="spock">
+              <img src="assets/img/spock.png" class="weapon-img">
+              <p class="weapon-name">SPOCK</p>
+            </div>
           </div>
+          <div class="game-stats-player">
+            <span class="game-stats wins"></span> WINS
+            <span class="game-stats losses"></span> LOSSES
+            <span class="game-stats draw"></span> DRAWS
+          </div>
+        </div> <!-- /.col-sm-4 -->
 
-        </div> <!-- /.col-xs-4 -->
-      </div> <!-- /.row -->
+        <div class="col-sm-4">
+          <h2>VS</h2>
+          <span id="action-console"></span>
+        </div> <!-- /.col-sm-4 -->
+
+        <div class="col-sm-4 opponent-col">
+          <h2 id="name-opponent">OPPONENT NAME</h2>
+          <div class="opponent-status">
+            <!-- STATUS OF OPPONENT'S TURN GOES HERE -->
+            <p id="opponent-status-now">I'm waiting on you boo boo...</p>
+          </div>
+          <div class="game-stats-opponent">
+            <span class="game-stats wins"></span> WINS
+            <span class="game-stats losses"></span> LOSSES
+            <span class="game-stats draw"></span> DRAWS
+          </div>
+        </div> <!-- /.col-sm-4 -->
+
+        <div class="col-sm-12" id="chat-window">
+          <div id="chat-history">
+            <!-- CHAT LOGS GO HERE -->
+            <p><span class="chat-player-name">Me: </span>New message in chat window</p>
+            <p><span class="chat-opponent-name">Mario: </span>New message in chat window</p>
+            <!-- REMEMBER TO SET scrollTop equal TO scrollHeight IN ORDER TO AUTO SCROLL TO BOTTOM OF DIV  -->
+          </div>
+          <div id="send-chat-message">
+            <label class="sr-only" for="new-chat-message">New Chat Message</label>
+            <input type="text" class="form-control" id="new-chat-message" placeholder="New message">
+            <button type="button" class="btn btn-success" id="message-send-btn">Send</button>
+          </div> <!-- /#send-chat-message -->
+        </div>
+      </div> <!-- /.row battlefield -->
 
     </div> <!-- /#gameboard -->
   </div> <!-- /.container -->

@@ -16,6 +16,33 @@
   width: 50px;
 }
 
+.leaderboards .col-sm-4 {
+  margin: 50px auto;
+  text-align: center;
+}
+
+.weapon {
+  display: inline-block;
+  width: 33.33333%;
+}
+
+.weapon-img {
+  width: 50px;
+}
+
+.weapon-name {
+  font-weight: bold;
+}
+
+.opponent-col {
+  height: 320px;
+}
+
+.opponent-status {
+  padding-top: 40px;
+  height: 200px;
+}
+
 #chat-window {
   margin-top: 25px;
   margin-bottom: 50px;
@@ -43,11 +70,6 @@
 #new-chat-message { width: 88.999999%; }
 #message-send-btn { width: 9.999999%; }
 #send-chat-message { margin: 10px 7px; }
-
-.leaderboards .col-sm-4 {
-	margin: 50px auto;
-  text-align: center;
-}
 
 .hidden {
 	display: none;
