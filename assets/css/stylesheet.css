@@ -1,0 +1,70 @@
+.main-header {
+	background-color: #FFF;
+	margin: 50px auto;
+	text-align: center;
+}
+
+.leaderboards {
+	background-color: #5FC2A6;
+	margin: 50px auto;
+}
+
+#chat-window {
+  margin-top: 25px;
+  margin-bottom: 50px;
+}
+
+#chat-history {
+  border: solid 2px #CCC;
+  border-radius: 5px;
+  margin: 10px;
+  height: 200px;
+  overflow: scroll;
+}
+
+#new-chat-message {
+  width: 88.999999%;
+}
+
+#message-send-btn {
+  width: 9.999999%;
+}
+
+#send-chat-message {
+  margin: 10px 7px;
+}
+
+.leaderboards .col-sm-4 {
+	margin: 50px auto;
+    text-align: center;
+}
+
+.hidden {
+	display: none;
+}
+
+/* -- Sticky footer styles -- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body { margin-bottom: 60px; } /* Margin bottom by footer height */
+.footer {
+  position: absolute;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 60px;
+  padding: 20px 20px;
+  background-color: #222;
+  color: #FFF;
+  font-size: 12px;
+}
+
+ /* -- Bootstrap overwritten styles -- */
+.navbar-inverse .navbar-toggle { color: #FFF; }
+.navbar-inverse .navbar-brand { color: #FFF; }
+.navbar-inverse .navbar-nav>li>a { color: #FFF; }
+.navbar { border-radius: 0px; }
+.form-control { display: inline; }

@@ -12,47 +12,42 @@
  *   6. Theme and style.
  */
 
-// TODO: Create player object
+ var rpslsChoices = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
 
 var config = {
 	apiKey: "AIzaSyDkXBvYGeQz45NI9wQmWy6C_cS7P4KR354",
 	authDomain: "rpsls-5141f.firebaseapp.com",
 	databaseURL: "https://rpsls-5141f.firebaseio.com",
+	storageBucket: "rpsls-5141f.appspot.com",
 };
 
 firebase.initializeApp(config);
 
 var database = firebase.database();
 
-// '.info/connected' is a special location provided by Firebase that is updated every time the client's connection state changes.
-// '.info/connected' is a boolean value, true if the client is connected and false if they are not.
-var connectedRef = database.ref(".info/connected");
+$('#play-btn').on('click', function() {
+	var playerName = $('#name-input').val().trim();
 
-// connectionsRef references a specific location in our database.
-// All of our connections will be stored in this directory.
-var connectionsRef = database.ref("/connections");
+	if (playerName != '') {
+		$('#new-player-form').animate({
+	        width: '200px',
+	        opacity: '0',
+	        display: 'hidden'
+	    }, 'fast', renderBattlefield());
 
-// When the client's connection state changes...
-connectedRef.on("value", function(snap) {
+		firebase.auth().signInAnonymously().catch(function(error) {
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			console.warn("Error Code: " + errorCode);
+			console.warn("Error Message: " + errorMessage);
+		});
 
-	// If they are connected..
-	if( snap.val() ) {
-
-		// Add user to the connections list.
-		var con = connectionsRef.push(true);
-
-		// Remove user from the connection list when they disconnect.
-		con.onDisconnect().remove();
-
-	};
-
+	} else {
+		// TODO: Do better job at implement name input required error alert.
+		$('#error-alert').removeClass('hidden');
+	}
 });
 
-// When first loaded or when the connections list changes...
-connectionsRef.on("value", function(snap) {
+function renderBattlefield() {
 
-	// Display the viewer count in the html.
-	// The number of online users is the number of children in the connections list.
-	$("#watchers").html(snap.numChildren());
-
-});
+}
