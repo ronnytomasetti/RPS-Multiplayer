@@ -5,8 +5,15 @@
 }
 
 .leaderboards {
-	background-color: #5FC2A6;
-	margin: 50px auto;
+	background-color: #F5F5F5;
+  padding-top: 20px;
+  padding-bottom: 15px;
+  border: solid 1px #DDDDDD;
+  border-radius: 5px;
+}
+
+.leaderboards img {
+  width: 50px;
 }
 
 #chat-window {
@@ -19,24 +26,27 @@
   border-radius: 5px;
   margin: 10px;
   height: 200px;
-  overflow: scroll;
+  overflow-x:hidden;
+  overflow-y:visible;
+  text-align: left;
+  padding-left: 15px;
+  padding-right: 15px;
 }
 
-#new-chat-message {
-  width: 88.999999%;
+#chat-history p {
+  margin-top: 15px;
+  margin-bottom: 20px;
 }
 
-#message-send-btn {
-  width: 9.999999%;
-}
-
-#send-chat-message {
-  margin: 10px 7px;
-}
+.chat-player-name { color: blue; }
+.chat-opponent-name { color: red; }
+#new-chat-message { width: 88.999999%; }
+#message-send-btn { width: 9.999999%; }
+#send-chat-message { margin: 10px 7px; }
 
 .leaderboards .col-sm-4 {
 	margin: 50px auto;
-    text-align: center;
+  text-align: center;
 }
 
 .hidden {
@@ -50,6 +60,7 @@ html {
 }
 
 body { margin-bottom: 60px; } /* Margin bottom by footer height */
+
 .footer {
   position: absolute;
   bottom: 0;

@@ -12,7 +12,13 @@
  *   6. Theme and style.
  */
 
- var rpslsChoices = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+ /**
+  * RPSLS Global Game Variables
+  * @type {Array}   WEAPON_CHOICES   -Store default hand choices.
+  * @type {Object}  PLAYER_OPPONENT  -Store reference to opponent object.
+  */
+ var WEAPON_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+ var PLAYER_OPPONENT;
 
 var config = {
 	apiKey: "AIzaSyDkXBvYGeQz45NI9wQmWy6C_cS7P4KR354",
@@ -24,30 +30,3 @@ var config = {
 firebase.initializeApp(config);
 
 var database = firebase.database();
-
-$('#play-btn').on('click', function() {
-	var playerName = $('#name-input').val().trim();
-
-	if (playerName != '') {
-		$('#new-player-form').animate({
-	        width: '200px',
-	        opacity: '0',
-	        display: 'hidden'
-	    }, 'fast', renderBattlefield());
-
-		firebase.auth().signInAnonymously().catch(function(error) {
-			var errorCode = error.code;
-			var errorMessage = error.message;
-			console.warn("Error Code: " + errorCode);
-			console.warn("Error Message: " + errorMessage);
-		});
-
-	} else {
-		// TODO: Do better job at implement name input required error alert.
-		$('#error-alert').removeClass('hidden');
-	}
-});
-
-function renderBattlefield() {
-
-}

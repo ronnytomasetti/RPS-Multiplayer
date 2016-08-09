@@ -44,49 +44,71 @@
   <div class="container">
     <div class="row text-center" id="gameboard">
 
-      <div class="row battlefield">
-        <div class="col-sm-4">
-          <h2>PLAYER 1</h2>
-          <p><span id="name-player-one"></span></p>
-          <div class="weapon-choices">
-            <!-- RPSLS CHOICES GO HERE -->
-          </div>
-          <div class="stats-player-one">
-            <p><span class="wins"></span></p>
-            <p><span class="losses"></span></p>
-            <p><span class="draw"></span></p>
-          </div>
-        </div> <!-- /.col-sm-4 -->
+      <div class="row">
+        <div class="col-xs-8">
 
-        <div class="col-sm-4">
-          <h2>VS</h2>
-          <span id="action-console"></span>
-        </div> <!-- /.col-sm-4 -->
+          <div class="row">
+            <!-- Player Profile column -->
+            <div class="col-xs-12">
 
-        <div class="col-sm-4">
-          <h2>PLAYER 2</h2>
-          <p><span id="name-player-two"></span></p>
-          <div class="weapon-choices">
-            <!-- RPSLS CHOICES GO HERE -->
-          </div>
-          <div class="stats-player-two">
-            <p><span class="wins"></span></p>
-            <p><span class="losses"></span></p>
-            <p><span class="draw"></span></p>
-          </div>
-        </div> <!-- /.col-sm-4 -->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Player Profile</h3>
+                </div>
+                <div class="panel-body">
+                  Display player profile here...
+                </div>
+              </div>
 
-        <div class="col-sm-12" id="chat-window">
-          <div id="chat-history">
-            <!-- CHAT LOGS GO HERE -->
-          </div>
-          <div id="send-chat-message">
-            <label class="sr-only" for="new-chat-message">New Chat Message</label>
-            <input type="text" class="form-control" id="new-chat-message" placeholder="New message">
-            <button type="button" class="btn btn-success" id="message-send-btn">Send</button>
-          </div> <!-- /#send-chat-message -->
+            </div> <!-- /.col-xs-12 -->
+          </div> <!-- /.row -->
+
+          <div class="row">
+            <!-- RPSLS Leaderboard column -->
+            <div class="col-xs-12">
+
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">RPSLS Leaderboards</h3>
+                </div>
+                <div class="panel-body">
+                  <div class="col-xs-3 leaderboards">
+                    <img src="assets/img/most_wins.png" alt="Most wins">
+                    <h4>MOST WINS</h4>
+                    <span id="leaderboard-wins">C-3PO</span>
+                  </div>
+                  <div class="col-xs-3 col-xs-offset-1 leaderboards">
+                    <img src="assets/img/most_losses.png" alt="Most losses">
+                    <h4>MOST LOSSES</h4>
+                    <span id="leaderboard-losses">R2-D2</span>
+                  </div>
+                  <div class="col-xs-4 col-xs-offset-1 leaderboards">
+                    <img src="assets/img/koh.png" alt="King of the Spock">
+                    <h4>KING OF THE SPOCK</h4>
+                    <span id="leaderboard-koh">Skywalker</span>
+                  </div>
+                </div>
+              </div>
+
+            </div> <!-- /.col-xs-12 -->
+          </div> <!-- /.row -->
+
         </div>
-      </div> <!-- /.row battlefield -->
+
+        <div class="col-xs-4">
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Open Games</h3>
+            </div>
+            <div class="panel-body">
+              List open games here...
+            </div>
+            <div class="panel-footer"><button type="button" class="btn btn-success">Start new game</button></div>
+          </div>
+
+        </div> <!-- /.col-xs-4 -->
+      </div> <!-- /.row -->
 
     </div> <!-- /#gameboard -->
   </div> <!-- /.container -->
@@ -96,44 +118,6 @@
       <p class="text-center">2016 UCF Coding Bootcamp RPS-Multiplayer by Ronny Tomasetti</p>
     </div>
   </footer>
-
-  <!-- Sign-up Modal -->
-  <div class="modal fade" id="signup-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Sign-up</h4>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Register</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Login Modal -->
-  <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Login</h4>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Login</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ======================================================== -->
   <!-- CDN jQuery min.js -->
