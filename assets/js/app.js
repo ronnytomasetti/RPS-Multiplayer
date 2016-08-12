@@ -15,48 +15,33 @@
 
 // window.onload = function() {};
 
-var WEAPON_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
-var PLAYER = {};
-var OPPONENT = {};
+var GAME = new RPSLS();
 
-var CONFIG = {
-	apiKey: "AIzaSyDkXBvYGeQz45NI9wQmWy6C_cS7P4KR354",
-	authDomain: "rpsls-5141f.firebaseapp.com",
-	databaseURL: "https://rpsls-5141f.firebaseio.com",
-	storageBucket: "rpsls-5141f.appspot.com",
-}; firebase.initializeApp(CONFIG);
+GAME.initializeFirebaseConnection();
 
-var DATABASE = firebase.database();
-var AUTH_DATA = firebase.auth();
-
+/**
+ * DESCRIPTION
+ *
+ * @param {}
+ * @return {}
+ */
 function renderNewPlayerForm() {
 	$('#rpsls-app').load('assets/ajax/new-player-form-template.html', function() {
 		$('#play-btn').on('click', function( event ) {
 			event.preventDefault();
+
 			var nameInput = $('#name-input').val().trim();
 
 			if (nameInput != '') {
-				PLAYER.name = nameInput;
-				PLAYER.wins = 0;
-				PLAYER.losses = 0;
-				PLAYER.draws = 0;
+				GAME.player.name = nameInput;
+				GAME.player.wins = 0;
+				GAME.player.losses = 0;
+				GAME.player.draws = 0;
 
-				AUTH_DATA.signInAnonymously().catch( function(error) {
-					console.warn("Error Code: " + error.code + ": " + error.message);
-				});
+				GAME.createAnonymousPlayer();
 
-				AUTH_DATA.onAuthStateChanged( function(user) {
-
-					DATABASE.ref('/player-profiles/' + user.uid).set({
-						name: PLAYER.name,
-						wins: PLAYER.wins,
-						losses: PLAYER.losses,
-						draws: PLAYER.draws
-					});
-
-					renderPlayerProfileHome();
-				});
-
+				renderPlayerProfileHome();
+				
 			} else {
 				// TODO: Do better job at implement name input required error alert.
 				$('#error-alert').removeClass('hidden');
@@ -66,74 +51,86 @@ function renderNewPlayerForm() {
 	});
 }
 
+/**
+ * DESCRIPTION
+ *
+ * @param {}
+ * @return {}
+ */
 function renderPlayerProfileHome() {
 	$('#rpsls-app').load('assets/ajax/profile-home-template.html', function() {
-		// LOAD PLAYER STUFF FOR THIS PAGE
-		$('#player-name').html(PLAYER.name);
-		$('#score-player-wins').html(PLAYER.wins);
-		$('#score-player-losses').html(PLAYER.losses);
-		$('#score-player-draws').html(PLAYER.draws);
-
-		$('#new-game-btn').on('click', function(event) {
-			event.preventDefault();
-		});
+		$('#player-name').html(GAME.player.name);
+		$('#score-player-wins').html(GAME.player.wins);
+		$('#score-player-losses').html(GAME.player.losses);
+		$('#score-player-draws').html(GAME.player.draws);
 
 		$('#confirm-game-btn').on('click', function(event) {
 			event.preventDefault();
+
 			var room = $('#game-room-id').val().trim();
 			
 			if (room === '')
-				room = PLAYER.name + "'s Game";
-
-			var newRoomKey = DATABASE.ref('/game-rooms/').push({
-																name: room,
-																player: firebase.auth().currentUser.uid,
-																opponent: false
-															    }).key;
+				room = GAME.player.name + "'s Game";
 
 			$('#new-game-modal').modal('hide');
 			$('#game-room-id').val('');
+
+			var newRoomKey = GAME.getNewRoomKey(room);
 			renderBattlefieldWith(newRoomKey);
 		});
 	});
 
-	DATABASE.ref('/game-rooms/').on('child_added', function(data) {
-	  addNewGameRoomBtn(data.key, data.val().name);
-	});
-
-	DATABASE.ref('/game-rooms/').on('child_removed', function(data) {
-	  removeGameRoomBtn(data.key);
-	});
+	GAME.startGameRoomsListeners();
 }
 
+/**
+ * Adds new button to the list of open games.
+ *
+ * @param {string} roomKey  :Room key variable for game room as retrieved from Firebase.
+ * @param {string} roomName :Name variable for game room as retrieved from Firebase.
+ * @return {}
+ */
 function addNewGameRoomBtn(roomKey, roomName) {
 	var $gameBtn = $('<button>').addClass('btn btn-default btn-md btn-block')
 								.attr('type', 'button')
 								.attr('room-key', roomKey )
-								.text(roomName);
+								.text(roomName)
+								.on('click', function() {
+									renderBattlefieldWith(roomKey);
+								});
 	$('#open-games-list').prepend($gameBtn);
 }
 
+/**
+ * Removes button from list of open games.
+ *
+ * @param {string} roomKey :Room key variable for game room.
+ * @return {}
+ */
 function removeGameRoomBtn(roomKey) {
 	$('#open-games-list').find('[room-key=' + roomKey + ']').remove();
 }
 
+/**
+ * Loads the battlefield template where player repeat rounds of RPSLS game logic.
+ *
+ * @param {string} roomKey :Room key variable for game room.
+ * @return {}
+ */
 function renderBattlefieldWith(roomKey) {
 	console.log("ROOM KEY: ", roomKey);
 	$('#rpsls-app').load('assets/ajax/battlefield-template.html', function() {
-		$('#name-player').html(PLAYER.name);
-		$('.player-wins').html(PLAYER.wins);
-		$('.player-losses').html(PLAYER.losses);
-		$('.player-draws').html(PLAYER.draws);
+		$('#name-player').html(GAME.player.name);
+		$('.player-wins').html(GAME.player.wins);
+		$('.player-losses').html(GAME.player.losses);
+		$('.player-draws').html(GAME.player.draws);
 	});
 }
 
-// ===============================
-//    APPLICATION ENTRY POINT
-// ===============================
-$(document).ready( function() {
-
-	var user = firebase.auth().currentUser;
+// ------------------- APPLICATION START -------------------
+$(document).ready( function()
+{
+	var user = GAME.getCurrentUser();
 
 	if (user)
 		renderPlayerProfileHome();

@@ -34,8 +34,11 @@
   font-weight: bold;
 }
 
-.opponent-col {
-  height: 320px;
+.player-col, .opponent-col {
+  height: 375px;
+  border: 4px solid #DDD;
+  border-radius: 10px;
+  background-color: #F5F5F5;
 }
 
 .opponent-status {
