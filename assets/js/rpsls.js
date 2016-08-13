@@ -4,7 +4,7 @@
  * 2016 UCF Coding Bootcamp
  */
 
-function RPSLS() {
+function Game() {
 
     this.player = {};
     this.opponent = {};
@@ -17,82 +17,152 @@ function RPSLS() {
                     databaseURL: "https://rpsls-5141f.firebaseio.com",
                     storageBucket: "rpsls-5141f.appspot.com"
                   };
-
-    /**
-     * Initializes Firebase connection using declared config variables above.
-     *
-     * @param {}
-     * @return {} 
-     */
-    this.initializeFirebaseConnection = function()
-    {
-        return firebase.initializeApp(this.config);
-    }
-
-    /**
-     * Authenticates a new anonymous player with Firebase.
-     *
-     * @param {}
-     * @return {} 
-     */
-    this.createAnonymousPlayer = function()
-    {
-        var self = this;
-
-        firebase.auth().signInAnonymously().catch( function(error) {
-            console.warn("Error Code: " + error.code + ": " + error.message);
-        });
-
-        firebase.auth().onAuthStateChanged( function(user) {
-            firebase.database().ref('/player-profiles/' + user.uid).set(
-            {
-                name: self.player.name,
-                wins: self.player.wins,
-                losses: self.player.losses,
-                draws: self.player.draws
-            });
-        });
-    }
-
-    /**
-     * Retrieves currently signed in and authenticated Firebase user.
-     *
-     * @param {}
-     * @return { NULL ? USER } :Returns null if user is signed in anonymously, else returns current user.
-     */
-    this.getCurrentUser = function()
-    {
-        return firebase.auth().currentUser;
-    }
-
-    /**
-     * Starts new Firebase database listeners to path /game-rooms
-     * for [ child_added ] and [ child_removed ] events.
-     *
-     * @param {}
-     * @return {} 
-     */
-    this.startGameRoomsListeners = function()
-    {
-        firebase.database().ref('/game-rooms/').on('child_added', function(data) {
-          addNewGameRoomBtn(data.key, data.val().name);
-        });
-
-        firebase.database().ref('/game-rooms/').on('child_removed', function(data) {
-          removeGameRoomBtn(data.key);
-        });
-    };
-
-    /**
-     * Returns new game room key after pushing object to /game-rooms path.
-     *
-     * @param {string} roomName :Name variable for game room from user input.
-     * @return {string} newKey  :Firebase uid variable to newly added /game-rooms object. 
-     */
-    this.getNewRoomKey = function(roomName)
-    {
-        var newKey = firebase.database().ref('/game-rooms/').push({ name: roomName }).key;
-        return newKey;
-    };
-  
 }
+
+/**
+ * Initializes Firebase connection using declared config variables above.
+ *
+ * @param {}
+ * @return {} 
+ */
+Game.prototype.initializeFirebaseConnection = function() {
+    return firebase.initializeApp(this.config);
+}
+
+/**
+ * Authenticates an anonymous player with Firebase.
+ *
+ * @param {}
+ * @return {} 
+ */
+Game.prototype.createAnonymousPlayer = function() {
+    var self = this;
+
+    firebase.auth().signInAnonymously().catch( function(error) {
+        console.warn("Error Code: " + error.code + ": " + error.message);
+    });
+
+    firebase.auth().onAuthStateChanged( function(user) {
+
+        firebase.database().ref('/player-profiles/' + user.uid).set(
+        {
+            name: self.player.name,
+            wins: self.player.totalWins,
+            losses: self.player.totalLosses,
+            draws: self.player.totalDraws
+        });
+    });
+}
+
+/**
+ * Retrieves currently signed in and authenticated Firebase user.
+ *
+ * @param {}
+ * @return { NULL ? USER } :Returns null if user is signed in anonymously, else returns current user.
+ */
+Game.prototype.getCurrentUser = function() {
+    return firebase.auth().currentUser;
+}
+
+/**
+ * Starts new Firebase database listeners to path /game-rooms
+ * for [ child_added ] and [ child_removed ] events.
+ *
+ * @param {}
+ * @return {} 
+ */
+Game.prototype.startGameRoomsListeners = function() {
+    var gameRoomsRef = firebase.database().ref('/game-rooms/');
+
+    gameRoomsRef.on('child_added', function(data) {
+      addNewGameRoomBtn(data.key, data.val().name);
+    });
+
+    gameRoomsRef.on('child_removed', function(data) {
+      removeGameRoomBtn(data.key);
+    });
+}
+
+/**
+ * Returns new game room key after pushing object to /game-rooms path.
+ *
+ * @param {string} roomName :Name variable for game room from user input.
+ * @return {string} newKey :Firebase uid variable to newly added /game-rooms object. 
+ */
+Game.prototype.getNewRoomKey = function(roomName) {
+    var newKey = firebase.database().ref('/game-rooms/').push({ name: roomName }).key;
+    return newKey;
+}
+
+/**
+ * description
+ *
+ * @param {type} variableName :description
+ * @return {type} name :description
+ */
+Game.prototype.initializeBattle = function(roomKey) {
+    this.player.battleWins = 0;
+    this.player.battleLosses = 0;
+    this.player.battleDraws = 0;
+    this.player.currentHand = false;
+
+    var user = firebase.auth().currentUser;
+
+    var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
+    var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/');
+    var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
+
+    userRef.set({
+                'battle-wins': this.player.battleWins,
+                'battle-losses': this.player.battleLosses,
+                'battle-draws': this.player.battleDraws,
+                'current-hand': this.player.currentHand
+                });
+
+    playersRef.on('child_added', function(data) {
+        if (data.key != user.uid) {
+            console.log("OPPONENT JOINED!");
+            // Add opponent to game object
+            // set opponent listeners
+            this.opponent.name = data.name;
+            this.opponent.battleWins = data.battleWins;
+            this.opponent.battleLosses = data.battleLosses;
+            this.opponent.battleDraws = data.battleDraws;
+        }
+    });
+
+    playersRef.on('child_removed', function(data) {
+        console.log("GAME OVER!!!");
+    });
+
+    battleChatRef.on('child_added', function() {
+        addNewChatMessage(data.val().name, data.val().message);
+    });
+}
+
+Game.prototype.joinBattle = function(roomKey) {
+    // Add player to game-room players list
+    // set opponent to game object
+    // set opponent listeners
+    this.player.battleWins = 0;
+    this.player.battleLosses = 0;
+    this.player.battleDraws = 0;
+    this.player.currentHand = false;
+
+    var user = firebase.auth().currentUser;
+
+    var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
+
+    userRef.set({
+                'battle-wins': this.player.battleWins,
+                'battle-losses': this.player.battleLosses,
+                'battle-draws': this.player.battleDraws,
+                'current-hand': this.player.currentHand
+                });
+
+    var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/');
+
+    playersRef.on('child_removed', function(data) {
+        console.log("GAME OVER!!!");
+    });
+};

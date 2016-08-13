@@ -4,65 +4,56 @@
  * RONNY TOMASETTI
  */
 
-// Instructions: ================================================================
-	// 1. Only two users can play at the same time.
-	// 2. Both players pick either rock, paper, or scissors.
-	// 3. After both players make their selection, the game will tell them the outcome (win, loss, draw).
-	// 4. Game will track each player's wins, losses, and draws.
-	// 5. Implement chat functionality into the game.
-	// 6. Theme and style.
-// ===============================================================================
+var Game = new Game();
 
-// window.onload = function() {};
-
-var GAME = new RPSLS();
-
-GAME.initializeFirebaseConnection();
+Game.initializeFirebaseConnection();
 
 /**
- * DESCRIPTION
+ * Renders the new player form in order to grab nickname input from user.
  *
  * @param {}
  * @return {}
  */
 function renderNewPlayerForm() {
 	$('#rpsls-app').load('assets/ajax/new-player-form-template.html', function() {
-		$('#play-btn').on('click', function( event ) {
+		$('#play-btn').on('click', function(event) {
 			event.preventDefault();
 
 			var nameInput = $('#name-input').val().trim();
 
 			if (nameInput != '') {
-				GAME.player.name = nameInput;
-				GAME.player.wins = 0;
-				GAME.player.losses = 0;
-				GAME.player.draws = 0;
+				Game.player.name = nameInput;
+				Game.player.totalWins = 0;
+				Game.player.totalLosses = 0;
+				Game.player.totalDraws = 0;
 
-				GAME.createAnonymousPlayer();
+				Game.createAnonymousPlayer();
 
 				renderPlayerProfileHome();
-				
+
 			} else {
 				// TODO: Do better job at implement name input required error alert.
 				$('#error-alert').removeClass('hidden');
 			}
+			
 			$('#name-input').val('');
 		});
 	});
 }
 
 /**
- * DESCRIPTION
+ * Renders the player profile home displaying player profile,
+ * list of open games, and RPSLS leaderboard.
  *
  * @param {}
  * @return {}
  */
 function renderPlayerProfileHome() {
 	$('#rpsls-app').load('assets/ajax/profile-home-template.html', function() {
-		$('#player-name').html(GAME.player.name);
-		$('#score-player-wins').html(GAME.player.wins);
-		$('#score-player-losses').html(GAME.player.losses);
-		$('#score-player-draws').html(GAME.player.draws);
+		$('#player-name').html(Game.player.name);
+		$('#score-player-wins').html(Game.player.totalWins);
+		$('#score-player-losses').html(Game.player.totalLosses);
+		$('#score-player-draws').html(Game.player.totalDraws);
 
 		$('#confirm-game-btn').on('click', function(event) {
 			event.preventDefault();
@@ -70,21 +61,22 @@ function renderPlayerProfileHome() {
 			var room = $('#game-room-id').val().trim();
 			
 			if (room === '')
-				room = GAME.player.name + "'s Game";
+				room = Game.player.name + "'s Game";
 
 			$('#new-game-modal').modal('hide');
 			$('#game-room-id').val('');
 
-			var newRoomKey = GAME.getNewRoomKey(room);
-			renderBattlefieldWith(newRoomKey);
+			var newRoomKey = Game.getNewRoomKey(room);
+
+			renderNewBattlefield(newRoomKey);
 		});
 	});
 
-	GAME.startGameRoomsListeners();
+	Game.startGameRoomsListeners();
 }
 
 /**
- * Adds new button to the list of open games.
+ * Adds new game room buttons to the list of open games.
  *
  * @param {string} roomKey  :Room key variable for game room as retrieved from Firebase.
  * @param {string} roomName :Name variable for game room as retrieved from Firebase.
@@ -96,13 +88,14 @@ function addNewGameRoomBtn(roomKey, roomName) {
 								.attr('room-key', roomKey )
 								.text(roomName)
 								.on('click', function() {
-									renderBattlefieldWith(roomKey);
+									joinBattlefield(roomKey);
 								});
+
 	$('#open-games-list').prepend($gameBtn);
 }
 
 /**
- * Removes button from list of open games.
+ * Removes a game room button from list of open games.
  *
  * @param {string} roomKey :Room key variable for game room.
  * @return {}
@@ -112,25 +105,46 @@ function removeGameRoomBtn(roomKey) {
 }
 
 /**
- * Loads the battlefield template where player repeat rounds of RPSLS game logic.
+ * Loads the battlefield page from create game button action allowing players to play rounds of RPSLS.
  *
  * @param {string} roomKey :Room key variable for game room.
  * @return {}
  */
-function renderBattlefieldWith(roomKey) {
-	console.log("ROOM KEY: ", roomKey);
+function renderNewBattlefield(roomKey) {
 	$('#rpsls-app').load('assets/ajax/battlefield-template.html', function() {
-		$('#name-player').html(GAME.player.name);
-		$('.player-wins').html(GAME.player.wins);
-		$('.player-losses').html(GAME.player.losses);
-		$('.player-draws').html(GAME.player.draws);
+		Game.initializeBattle(roomKey);
+
+		$('#name-player').html(Game.player.name);
+		$('.player-wins').html(Game.player.battleWins);
+		$('.player-losses').html(Game.player.battleLosses);
+		$('.player-draws').html(Game.player.battleDraws);
 	});
 }
 
-// ------------------- APPLICATION START -------------------
-$(document).ready( function()
-{
-	var user = GAME.getCurrentUser();
+/**
+ * Loads battlefield page from join game button action allowing players to play rounds of RPSLS.
+ *
+ * @param {string} roomKey :Room key variable for game room.
+ * @return {}
+ */
+function joinBattlefield(roomKey) {
+	$('#rpsls-app').load('assets/ajax/battlefield-template.html', function() {
+		Game.joinBattle(roomKey);
+
+		$('#name-player').html(Game.player.name);
+		$('.player-wins').html(Game.player.battleWins);
+		$('.player-losses').html(Game.player.battleLosses);
+		$('.player-draws').html(Game.player.battleDraws);
+	});
+}
+
+function addNewChatMessage(name, message) {
+	$('#chat-history').find('.chat-name').
+}
+
+// ------------------- STARTS APPLICATION ------------------- //
+$(document).ready( function() {
+	var user = Game.getCurrentUser();
 
 	if (user)
 		renderPlayerProfileHome();
