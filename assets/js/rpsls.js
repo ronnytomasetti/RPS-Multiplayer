@@ -106,6 +106,8 @@ Game.prototype.initializeBattle = function(roomKey) {
     this.player.battleDraws = 0;
     this.player.currentHand = false;
 
+    var self = this;
+
     var user = firebase.auth().currentUser;
 
     var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
@@ -113,10 +115,11 @@ Game.prototype.initializeBattle = function(roomKey) {
     var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
 
     userRef.set({
-                'battle-wins': this.player.battleWins,
-                'battle-losses': this.player.battleLosses,
-                'battle-draws': this.player.battleDraws,
-                'current-hand': this.player.currentHand
+                'playerName': this.player.name,
+                'battleWins': this.player.battleWins,
+                'battleLosses': this.player.battleLosses,
+                'battleDraws': this.player.battleDraws,
+                'currentHand': this.player.currentHand
                 });
 
     playersRef.on('child_added', function(data) {
@@ -124,10 +127,10 @@ Game.prototype.initializeBattle = function(roomKey) {
             console.log("OPPONENT JOINED!");
             // Add opponent to game object
             // set opponent listeners
-            this.opponent.name = data.name;
-            this.opponent.battleWins = data.battleWins;
-            this.opponent.battleLosses = data.battleLosses;
-            this.opponent.battleDraws = data.battleDraws;
+            self.opponent.name = data.val().playerName;
+            self.opponent.battleWins = data.val().battleWins;
+            self.opponent.battleLosses = data.val().battleLosses;
+            self.opponent.battleDraws = data.val().battleDraws;
         }
     });
 
@@ -135,7 +138,8 @@ Game.prototype.initializeBattle = function(roomKey) {
         console.log("GAME OVER!!!");
     });
 
-    battleChatRef.on('child_added', function() {
+    battleChatRef.on('child_added', function(data) {
+        console.log("DATA: ", data.key);
         addNewChatMessage(data.val().name, data.val().message);
     });
 }
@@ -150,14 +154,16 @@ Game.prototype.joinBattle = function(roomKey) {
     this.player.currentHand = false;
 
     var user = firebase.auth().currentUser;
-
     var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
 
+    
+
     userRef.set({
-                'battle-wins': this.player.battleWins,
-                'battle-losses': this.player.battleLosses,
-                'battle-draws': this.player.battleDraws,
-                'current-hand': this.player.currentHand
+                'playerName': this.player.name,
+                'battleWins': this.player.battleWins,
+                'battleLosses': this.player.battleLosses,
+                'battleDraws': this.player.battleDraws,
+                'currentHand': this.player.currentHand
                 });
 
     var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/');
@@ -165,4 +171,26 @@ Game.prototype.joinBattle = function(roomKey) {
     playersRef.on('child_removed', function(data) {
         console.log("GAME OVER!!!");
     });
+
+    var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
+    
+    battleChatRef.on('child_added', function(data) {
+        console.log("DATA: ", data.key);
+        addNewChatMessage(data.val().name, data.val().message);
+    });
 };
+
+Game.prototype.sendChatMessage = function(roomKey, name, message) {
+    var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
+
+    battleChatRef.push({
+                        'name': name,
+                        'message': message
+                      });
+}
+
+Game.prototype.leaveBattle = function(roomKey) {
+    var user = firebase.auth().currentUser;
+    var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
+    userRef.remove();
+}

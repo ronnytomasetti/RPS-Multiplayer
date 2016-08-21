@@ -118,6 +118,22 @@ function renderNewBattlefield(roomKey) {
 		$('.player-wins').html(Game.player.battleWins);
 		$('.player-losses').html(Game.player.battleLosses);
 		$('.player-draws').html(Game.player.battleDraws);
+
+		$('#message-send-btn').on('click', function() {
+			var name = Game.player.name;
+			var message = $('#new-chat-message').val().trim();
+
+			if (message != '') {
+				Game.sendChatMessage(roomKey, name, message);
+			}
+
+			$('#new-chat-message').val('');
+		});
+
+		$('#leave-game-btn').on('click', function() {
+			Game.leaveBattle(roomKey);
+			renderPlayerProfileHome();
+		});
 	});
 }
 
@@ -135,11 +151,45 @@ function joinBattlefield(roomKey) {
 		$('.player-wins').html(Game.player.battleWins);
 		$('.player-losses').html(Game.player.battleLosses);
 		$('.player-draws').html(Game.player.battleDraws);
+
+		$('#message-send-btn').on('click', function() {
+			var name = Game.player.name;
+			var message = $('#new-chat-message').val().trim();
+
+			if (message != '') {
+				Game.sendChatMessage(roomKey, name, message);
+			}
+
+			$('#new-chat-message').val('');
+		});
+
+		$('#leave-game-btn').on('click', function() {
+			Game.leaveBattle(roomKey);
+			renderPlayerProfileHome();
+		});
 	});
 }
 
+function addBattleOpponent() {
+	
+}
+
 function addNewChatMessage(name, message) {
-	$('#chat-history').find('.chat-name').
+	var $newChatMessage = $('<p>');
+
+	var $player = $('<span>').addClass('chat-player-name')
+							 .html(name);
+
+	var $message = $('<span>').addClass('chat-player-message')
+							  .html(':  ' + message);
+
+	$newChatMessage.append($player, $message);
+
+	$('#chat-history').append($newChatMessage);
+
+	var newHeight = $('#chat-history').children().length * 45;
+
+	$('#chat-history').animate( {scrollTop: newHeight} );
 }
 
 // ------------------- STARTS APPLICATION ------------------- //
