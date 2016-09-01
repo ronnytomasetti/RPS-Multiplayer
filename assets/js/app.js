@@ -35,7 +35,7 @@ function renderNewPlayerForm() {
 				// TODO: Do better job at implement name input required error alert.
 				$('#error-alert').removeClass('hidden');
 			}
-			
+
 			$('#name-input').val('');
 		});
 	});
@@ -59,7 +59,7 @@ function renderPlayerProfileHome() {
 			event.preventDefault();
 
 			var room = $('#game-room-id').val().trim();
-			
+
 			if (room === '')
 				room = Game.player.name + "'s Game";
 
@@ -123,9 +123,8 @@ function renderNewBattlefield(roomKey) {
 			var name = Game.player.name;
 			var message = $('#new-chat-message').val().trim();
 
-			if (message != '') {
+			if (message != '')
 				Game.sendChatMessage(roomKey, name, message);
-			}
 
 			$('#new-chat-message').val('');
 		});
@@ -171,7 +170,10 @@ function joinBattlefield(roomKey) {
 }
 
 function addBattleOpponent() {
-	
+	$('#name-opponent').html(Game.opponent.name);
+	$('.opponent-wins').html(Game.opponent.battleWins);
+	$('.opponent-losses').html(Game.opponent.battleLosses);
+	$('.opponent-draws').html(Game.opponent.battleDraws);
 }
 
 function addNewChatMessage(name, message) {

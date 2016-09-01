@@ -8,7 +8,7 @@ function Game() {
 
     this.player = {};
     this.opponent = {};
-    
+
     this.weapons = [ 'rock', 'paper', 'scissors', 'lizard', 'spock' ];
 
     this.config = {
@@ -23,7 +23,7 @@ function Game() {
  * Initializes Firebase connection using declared config variables above.
  *
  * @param {}
- * @return {} 
+ * @return {}
  */
 Game.prototype.initializeFirebaseConnection = function() {
     return firebase.initializeApp(this.config);
@@ -33,7 +33,7 @@ Game.prototype.initializeFirebaseConnection = function() {
  * Authenticates an anonymous player with Firebase.
  *
  * @param {}
- * @return {} 
+ * @return {}
  */
 Game.prototype.createAnonymousPlayer = function() {
     var self = this;
@@ -69,7 +69,7 @@ Game.prototype.getCurrentUser = function() {
  * for [ child_added ] and [ child_removed ] events.
  *
  * @param {}
- * @return {} 
+ * @return {}
  */
 Game.prototype.startGameRoomsListeners = function() {
     var gameRoomsRef = firebase.database().ref('/game-rooms/');
@@ -87,7 +87,7 @@ Game.prototype.startGameRoomsListeners = function() {
  * Returns new game room key after pushing object to /game-rooms path.
  *
  * @param {string} roomName :Name variable for game room from user input.
- * @return {string} newKey :Firebase uid variable to newly added /game-rooms object. 
+ * @return {string} newKey :Firebase uid variable to newly added /game-rooms object.
  */
 Game.prototype.getNewRoomKey = function(roomName) {
     var newKey = firebase.database().ref('/game-rooms/').push({ name: roomName }).key;
@@ -111,7 +111,7 @@ Game.prototype.initializeBattle = function(roomKey) {
     var user = firebase.auth().currentUser;
 
     var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
-    var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/');
+    var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players');
     var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
 
     userRef.set({
@@ -125,17 +125,17 @@ Game.prototype.initializeBattle = function(roomKey) {
     playersRef.on('child_added', function(data) {
         if (data.key != user.uid) {
             console.log("OPPONENT JOINED!");
-            // Add opponent to game object
-            // set opponent listeners
             self.opponent.name = data.val().playerName;
             self.opponent.battleWins = data.val().battleWins;
             self.opponent.battleLosses = data.val().battleLosses;
             self.opponent.battleDraws = data.val().battleDraws;
         }
+        addBattleOpponent();
     });
 
     playersRef.on('child_removed', function(data) {
         console.log("GAME OVER!!!");
+        renderPlayerProfileHome()
     });
 
     battleChatRef.on('child_added', function(data) {
@@ -153,10 +153,10 @@ Game.prototype.joinBattle = function(roomKey) {
     this.player.battleDraws = 0;
     this.player.currentHand = false;
 
+    var self = this;
+
     var user = firebase.auth().currentUser;
     var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
-
-    
 
     userRef.set({
                 'playerName': this.player.name,
@@ -168,12 +168,25 @@ Game.prototype.joinBattle = function(roomKey) {
 
     var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/');
 
+    playersRef.on('child_added', function(data) {
+        if (data.key != user.uid) {
+            console.log("OPPONENT JOINED!");
+            console.log("NEW OPPONENT: ", data.key);
+            self.opponent.name = data.val().playerName;
+            self.opponent.battleWins = data.val().battleWins;
+            self.opponent.battleLosses = data.val().battleLosses;
+            self.opponent.battleDraws = data.val().battleDraws;
+        }
+        addBattleOpponent();
+    });
+
     playersRef.on('child_removed', function(data) {
         console.log("GAME OVER!!!");
+        renderPlayerProfileHome()
     });
 
     var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
-    
+
     battleChatRef.on('child_added', function(data) {
         console.log("DATA: ", data.key);
         addNewChatMessage(data.val().name, data.val().message);
