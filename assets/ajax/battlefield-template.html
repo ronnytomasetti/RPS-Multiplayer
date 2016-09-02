@@ -1,68 +1,70 @@
 <html>
 
 <div class="row battlefield">
-  <div class="col-sm-4 player-col">
-    <h2 id="name-player"></h2>
-    <div class="weapon-choices">
-      <!-- RPSLS CHOICES GO HERE -->
-      <div class="weapon" id="rock">
-        <img src="assets/img/rock.png" class="weapon-img">
-        <p class="weapon-name">ROCK</p>
-      </div>
-      <div class="weapon" id="paper">
-        <img src="assets/img/paper.png" class="weapon-img">
-        <p class="weapon-name">PAPER</p>
-      </div>
-      <div class="weapon" id="scissors">
-        <img src="assets/img/scissors.png" class="weapon-img">
-        <p class="weapon-name">SCISSORS</p>
-      </div>
-      <div class="weapon" id="lizard">
-        <img src="assets/img/lizard.png" class="weapon-img">
-        <p class="weapon-name">LIZARD</p>
-      </div>
-      <div class="weapon" id="spock">
-        <img src="assets/img/spock.png" class="weapon-img">
-        <p class="weapon-name">SPOCK</p>
-      </div>
-    </div>
-    <div class="game-stats-player">
-      <span class="game-stats player-wins"></span> WINS
-      <span class="game-stats player-losses"></span> LOSSES
-      <span class="game-stats player-draws"></span> DRAWS
-    </div>
-    <button id="leave-game-btn" type="button" class="btn btn-danger">LEAVE GAME</button>
-  </div> <!-- /.col-sm-4 -->
 
-  <div class="col-sm-4">
-    <h2>VS</h2>
-    <span id="action-console"></span>
-  </div> <!-- /.col-sm-4 -->
+    <div class="col-sm-4 player-col">
+        <h2 id="name-player"></h2>
+        <div class="weapon-choices">
+            <!-- RPSLS CHOICES GO HERE -->
+            <div class="weapon" id="rock">
+                <img src="assets/img/rock.png" class="weapon-img">
+                <p class="weapon-name">ROCK</p>
+            </div>
+            <div class="weapon" id="paper">
+                <img src="assets/img/paper.png" class="weapon-img">
+                <p class="weapon-name">PAPER</p>
+            </div>
+            <div class="weapon" id="scissors">
+                <img src="assets/img/scissors.png" class="weapon-img">
+                <p class="weapon-name">SCISSORS</p>
+            </div>
+            <div class="weapon" id="lizard">
+                <img src="assets/img/lizard.png" class="weapon-img">
+                <p class="weapon-name">LIZARD</p>
+            </div>
+            <div class="weapon" id="spock">
+                <img src="assets/img/spock.png" class="weapon-img">
+                <p class="weapon-name">SPOCK</p>
+            </div>
+        </div>
+        <div class="game-stats-player">
+            <span class="game-stats player-wins"></span> WINS
+            <span class="game-stats player-losses"></span> LOSSES
+            <span class="game-stats player-draws"></span> DRAWS
+        </div>
+        <button id="leave-game-btn" type="button" class="btn btn-danger">LEAVE GAME</button>
+    </div> <!-- /.col-sm-4 -->
 
-  <div class="col-sm-4 opponent-col">
-    <h2 id="name-opponent">name-opponent</h2>
-    <div class="opponent-status">
-      <!-- STATUS OF OPPONENT'S TURN GOES HERE -->
-      <p id="opponent-status-now">opponent-status-now</p>
-    </div>
-    <div class="game-stats-opponent">
-      <span class="game-stats opponent-wins"></span> WINS
-      <span class="game-stats opponent-losses"></span> LOSSES
-      <span class="game-stats opponent-draws"></span> DRAWS
-    </div>
-  </div> <!-- /.col-sm-4 -->
+    <div class="col-sm-4">
+        <h2>VS</h2>
+        <span id="action-console"></span>
+    </div> <!-- /.col-sm-4 -->
 
-  <div class="col-sm-12" id="chat-window">
-    <div id="chat-history">
-      <!-- CHAT LOGS GO HERE -->
-      <!-- REMEMBER TO SET scrollTop equal TO scrollHeight IN ORDER TO AUTO SCROLL TO BOTTOM OF DIV  -->
-    </div>
-    <div id="send-chat-message">
-      <label class="sr-only" for="new-chat-message">New Chat Message</label>
-      <input type="text" class="form-control" id="new-chat-message" placeholder="New message">
-      <button type="button" class="btn btn-success" id="message-send-btn">Send</button>
-    </div> <!-- /#send-chat-message -->
-  </div>
+    <div class="col-sm-4 opponent-col">
+        <h2 id="name-opponent">name-opponent</h2>
+        <div class="opponent-status">
+            <!-- STATUS OF OPPONENT'S TURN GOES HERE -->
+            <p id="opponent-status-now"></p>
+        </div>
+        <div class="game-stats-opponent">
+            <span class="game-stats opponent-wins"></span> WINS
+            <span class="game-stats opponent-losses"></span> LOSSES
+            <span class="game-stats opponent-draws"></span> DRAWS
+        </div>
+    </div> <!-- /.col-sm-4 -->
+
+    <div class="col-sm-12" id="chat-window">
+        <div id="chat-history">
+            <!-- CHAT LOGS GO HERE -->
+            <!-- TODO: SET scrollTop EQUAL TO scrollHeight IN ORDER TO AUTO SCROLL TO BOTTOM OF DIV  -->
+        </div>
+        <div id="send-chat-message">
+            <label class="sr-only" for="new-chat-message">New Chat Message</label>
+            <input type="text" class="form-control" id="new-chat-message" placeholder="New message">
+            <button type="button" class="btn btn-success" id="message-send-btn">Send</button>
+        </div> <!-- /#send-chat-message -->
+    </div> <!-- /#chat-window -->
+
 </div> <!-- /.row battlefield -->
 
 </html>

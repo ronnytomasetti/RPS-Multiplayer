@@ -32,7 +32,7 @@ function renderNewPlayerForm() {
 				renderPlayerProfileHome();
 
 			} else {
-				// TODO: Do better job at implement name input required error alert.
+				// TODO: DO A BETTER JOB AT IMPLEMENTING ERROR ALERT
 				$('#error-alert').removeClass('hidden');
 			}
 
@@ -88,7 +88,7 @@ function addNewGameRoomBtn(roomKey, roomName) {
 								.attr('room-key', roomKey )
 								.text(roomName)
 								.on('click', function() {
-									joinBattlefield(roomKey);
+									renderNewBattlefield(roomKey);
 								});
 
 	$('#open-games-list').prepend($gameBtn);
@@ -130,40 +130,7 @@ function renderNewBattlefield(roomKey) {
 		});
 
 		$('#leave-game-btn').on('click', function() {
-			Game.leaveBattle(roomKey);
-			renderPlayerProfileHome();
-		});
-	});
-}
-
-/**
- * Loads battlefield page from join game button action allowing players to play rounds of RPSLS.
- *
- * @param {string} roomKey :Room key variable for game room.
- * @return {}
- */
-function joinBattlefield(roomKey) {
-	$('#rpsls-app').load('assets/ajax/battlefield-template.html', function() {
-		Game.joinBattle(roomKey);
-
-		$('#name-player').html(Game.player.name);
-		$('.player-wins').html(Game.player.battleWins);
-		$('.player-losses').html(Game.player.battleLosses);
-		$('.player-draws').html(Game.player.battleDraws);
-
-		$('#message-send-btn').on('click', function() {
-			var name = Game.player.name;
-			var message = $('#new-chat-message').val().trim();
-
-			if (message != '') {
-				Game.sendChatMessage(roomKey, name, message);
-			}
-
-			$('#new-chat-message').val('');
-		});
-
-		$('#leave-game-btn').on('click', function() {
-			Game.leaveBattle(roomKey);
+			Game.leaveBattle(Game.getCurrentUser().uid, roomKey);
 			renderPlayerProfileHome();
 		});
 	});

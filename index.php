@@ -32,12 +32,12 @@
         </button>
         <a class="navbar-brand" href="#">RPSLS</a>
       </div>
-      <div id="navbar" class="collapse navbar-collapse">
+      <!-- <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav navbar-right">
           <li><a data-toggle="modal" href="#signup-modal">Sign-up</a></li>
           <li><a data-toggle="modal" href="#login-modal">Login</a></li>
         </ul>
-      </div> <!--/#navbar -->
+      </div> -->
     </div> <!--/.container -->
   </nav> <!--/.navbar -->
 

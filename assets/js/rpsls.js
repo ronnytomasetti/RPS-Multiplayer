@@ -52,6 +52,8 @@ Game.prototype.createAnonymousPlayer = function() {
             draws: self.player.totalDraws
         });
     });
+
+    return;
 }
 
 /**
@@ -62,6 +64,17 @@ Game.prototype.createAnonymousPlayer = function() {
  */
 Game.prototype.getCurrentUser = function() {
     return firebase.auth().currentUser;
+}
+
+/**
+ * Returns new game room key after pushing object to /game-rooms path.
+ *
+ * @param {string} roomName :Name variable for game room from user input.
+ * @return {string} newKey  :Firebase uid variable to newly added /game-rooms object.
+ */
+Game.prototype.getNewRoomKey = function(roomName) {
+    var newKey = firebase.database().ref('/game-rooms/').push({ name: roomName }).key;
+    return newKey;
 }
 
 /**
@@ -81,24 +94,16 @@ Game.prototype.startGameRoomsListeners = function() {
     gameRoomsRef.on('child_removed', function(data) {
       removeGameRoomBtn(data.key);
     });
+
+    return;
 }
 
 /**
- * Returns new game room key after pushing object to /game-rooms path.
+ * Initialized battlefield Firebase variables for player and opponent.
+ * Starts Firebase database listeners for player and chat data.
  *
- * @param {string} roomName :Name variable for game room from user input.
- * @return {string} newKey :Firebase uid variable to newly added /game-rooms object.
- */
-Game.prototype.getNewRoomKey = function(roomName) {
-    var newKey = firebase.database().ref('/game-rooms/').push({ name: roomName }).key;
-    return newKey;
-}
-
-/**
- * description
- *
- * @param {type} variableName :description
- * @return {type} name :description
+ * @param {String} roomKey  :Game room uid for new battlefield.
+ * @return {}
  */
 Game.prototype.initializeBattle = function(roomKey) {
     this.player.battleWins = 0;
@@ -109,7 +114,6 @@ Game.prototype.initializeBattle = function(roomKey) {
     var self = this;
 
     var user = firebase.auth().currentUser;
-
     var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
     var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players');
     var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
@@ -124,75 +128,52 @@ Game.prototype.initializeBattle = function(roomKey) {
 
     playersRef.on('child_added', function(data) {
         if (data.key != user.uid) {
-            console.log("OPPONENT JOINED!");
             self.opponent.name = data.val().playerName;
             self.opponent.battleWins = data.val().battleWins;
             self.opponent.battleLosses = data.val().battleLosses;
             self.opponent.battleDraws = data.val().battleDraws;
         }
         addBattleOpponent();
+        self.startRounds();
     });
 
     playersRef.on('child_removed', function(data) {
-        console.log("GAME OVER!!!");
-        renderPlayerProfileHome()
+        if (data.key === user.uid) {
+            firebase.database().ref('/player-profiles/' + user.uid).set(
+            {
+                name: self.player.name,
+                wins: self.player.battleWins + self.player.totalWins,
+                losses: self.player.battleLosses + self.player.totalLosses,
+                draws: self.player.battleDraws + self.player.totalDraws
+            });
+        }
     });
 
     battleChatRef.on('child_added', function(data) {
-        console.log("DATA: ", data.key);
         addNewChatMessage(data.val().name, data.val().message);
     });
+
+    return;
 }
 
-Game.prototype.joinBattle = function(roomKey) {
-    // Add player to game-room players list
-    // set opponent to game object
-    // set opponent listeners
-    this.player.battleWins = 0;
-    this.player.battleLosses = 0;
-    this.player.battleDraws = 0;
-    this.player.currentHand = false;
+/**
+ * Description
+ *
+ * @param {type} variableName  :description
+ * @return {type} variableName :description
+ */
+Game.prototype.leaveBattle = function(user, roomKey) {
+    var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user);
+    userRef.remove();
+    return;
+}
 
-    var self = this;
-
-    var user = firebase.auth().currentUser;
-    var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
-
-    userRef.set({
-                'playerName': this.player.name,
-                'battleWins': this.player.battleWins,
-                'battleLosses': this.player.battleLosses,
-                'battleDraws': this.player.battleDraws,
-                'currentHand': this.player.currentHand
-                });
-
-    var playersRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/');
-
-    playersRef.on('child_added', function(data) {
-        if (data.key != user.uid) {
-            console.log("OPPONENT JOINED!");
-            console.log("NEW OPPONENT: ", data.key);
-            self.opponent.name = data.val().playerName;
-            self.opponent.battleWins = data.val().battleWins;
-            self.opponent.battleLosses = data.val().battleLosses;
-            self.opponent.battleDraws = data.val().battleDraws;
-        }
-        addBattleOpponent();
-    });
-
-    playersRef.on('child_removed', function(data) {
-        console.log("GAME OVER!!!");
-        renderPlayerProfileHome()
-    });
-
-    var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
-
-    battleChatRef.on('child_added', function(data) {
-        console.log("DATA: ", data.key);
-        addNewChatMessage(data.val().name, data.val().message);
-    });
-};
-
+/**
+ * Description
+ *
+ * @param {type} variableName  :description
+ * @return {type} variableName :description
+ */
 Game.prototype.sendChatMessage = function(roomKey, name, message) {
     var battleChatRef = firebase.database().ref('/game-rooms/' + roomKey + '/chat');
 
@@ -200,10 +181,6 @@ Game.prototype.sendChatMessage = function(roomKey, name, message) {
                         'name': name,
                         'message': message
                       });
-}
 
-Game.prototype.leaveBattle = function(roomKey) {
-    var user = firebase.auth().currentUser;
-    var userRef = firebase.database().ref('/game-rooms/' + roomKey + '/players/' + user.uid);
-    userRef.remove();
+    return;
 }
